@@ -9,8 +9,8 @@
     "backend:dev": "cd backend && npm run dev",
     "frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
-    "build": "node build.js",
-    "vercel-build": "node build.js"
+    "build": "node build.cjs",
+    "vercel-build": "node build.cjs"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
