@@ -17,8 +17,15 @@ initDb();
 app.use(cors());
 app.use(express.json());
 
-// API Routes (Mounted on both /api and / for local & Vercel serverless compatibility)
-app.use('/api', apiRoutes);
+// Path Normalizer Middleware for Serverless & Direct Express compatibility
+app.use((req, res, next) => {
+  if (req.url.startsWith('/api/')) {
+    req.url = req.url.replace(/^\/api/, '');
+  }
+  next();
+});
+
+// API Routes
 app.use('/', apiRoutes);
 
 // Health check endpoint
