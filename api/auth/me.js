@@ -1,5 +1,13 @@
-const app = require('../../backend/server');
+const authController = require('../../backend/controllers/authController');
 
 module.exports = (req, res) => {
-  app(req, res);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  return authController.getMe(req, res);
 };
