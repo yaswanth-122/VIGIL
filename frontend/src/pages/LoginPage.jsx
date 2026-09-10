@@ -116,10 +116,22 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Demo Account Info Helper */}
-        <div className="bg-black/30 p-3 rounded-xl border border-white/5 text-[11px] text-gray-400 space-y-1">
-          <p className="font-bold text-gray-300">Default Demo Credentials:</p>
-          <p>Username: <strong className="text-cyan-400">alexrivera</strong> | Password: <strong className="text-cyan-400">password123</strong></p>
+        {/* Demo Account Info Helper with 1-Click Auto Fill */}
+        <div className="bg-black/40 p-3.5 rounded-xl border border-cyan-500/20 text-[11px] text-gray-300 flex items-center justify-between gap-2">
+          <div>
+            <p className="font-bold text-white">Default Demo Account:</p>
+            <p className="text-gray-400">User: <strong className="text-cyan-400">alexrivera</strong> | Pass: <strong className="text-cyan-400">password123</strong></p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setUsernameOrEmail('alexrivera');
+              setPassword('password123');
+            }}
+            className="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-semibold transition-colors shrink-0"
+          >
+            Auto-fill
+          </button>
         </div>
 
         {/* Create Account Link */}
