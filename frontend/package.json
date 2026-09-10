@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "vercel-build": "node -e \"const fs=require('fs'), {execSync}=require('child_process'); const root = (!fs.existsSync('backend') && fs.existsSync('../backend')) ? '..' : '.'; execSync('npm --prefix ' + root + '/backend install && npm --prefix ' + root + '/frontend install && npm --prefix ' + root + '/frontend run build', {stdio: 'inherit'});\"",
+    "vercel-build": "node ../build.js",
     "preview": "vite preview"
   },
   "dependencies": {

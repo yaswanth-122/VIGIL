@@ -9,8 +9,8 @@
     "backend:dev": "cd backend && npm run dev",
     "frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
-    "build": "node -e \"const fs=require('fs'), {execSync}=require('child_process'); const root = (!fs.existsSync('backend') && fs.existsSync('../backend')) ? '..' : '.'; execSync('npm --prefix ' + root + '/backend install && npm --prefix ' + root + '/frontend install && npm --prefix ' + root + '/frontend run build', {stdio: 'inherit'});\"",
-    "vercel-build": "node -e \"const fs=require('fs'), {execSync}=require('child_process'); const root = (!fs.existsSync('backend') && fs.existsSync('../backend')) ? '..' : '.'; execSync('npm --prefix ' + root + '/backend install && npm --prefix ' + root + '/frontend install && npm --prefix ' + root + '/frontend run build', {stdio: 'inherit'});\""
+    "build": "node build.js",
+    "vercel-build": "node build.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
