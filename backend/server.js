@@ -30,6 +30,19 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Serve compiled static React Vite frontend assets for single-service deployment
+const distPath = path.join(__dirname, '../frontend/dist');
+const fs = require('fs');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path === '/health') {
+      return next();
+    }
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Unhandled Server Error:', err);

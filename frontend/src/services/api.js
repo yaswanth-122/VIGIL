@@ -1,4 +1,4 @@
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 function getAuthHeaders() {
   const token = localStorage.getItem('vigil_auth_token');

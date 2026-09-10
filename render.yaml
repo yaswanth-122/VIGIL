@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: vigil-backend
+    name: vigil-app
     env: node
     plan: free
-    buildCommand: npm install && cd backend && npm install
+    buildCommand: npm run build
     startCommand: node backend/server.js
     healthCheckPath: /health
     envVars:
