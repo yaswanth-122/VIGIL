@@ -17,8 +17,9 @@ initDb();
 app.use(cors());
 app.use(express.json());
 
-// API Routes
+// API Routes (Mounted on both /api and / for local & Vercel serverless compatibility)
 app.use('/api', apiRoutes);
+app.use('/', apiRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
