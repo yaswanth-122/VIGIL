@@ -3,7 +3,10 @@
     {
       "id": "usr_default",
       "name": "Alex Rivera",
+      "username": "alexrivera",
+      "email": "alex.rivera@example.com",
       "phone": "+1 (555) 234-5678",
+      "password_hash": "a15c0630a9c542ac074df193d789bf8a4c9368de33f14f67c3a44d2aac09f63cfe821df04f2513a70f08b2e4a648ba0a1733283141b994b3d66e316e8712bea0",
       "emergency_contact": "Sarah Rivera (Mother)",
       "emergency_phone": "+1 (555) 987-6543",
       "blood_type": "O+",
