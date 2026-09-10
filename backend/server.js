@@ -1,0 +1,46 @@
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const dotenv = require('dotenv');
+const apiRoutes = require('./routes/api');
+const { initDb } = require('./database/db');
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Initialize persistent DB engine
+initDb();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// API Routes
+app.use('/api', apiRoutes);
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'online',
+    app: 'VIGIL AI Virtual Safety Companion',
+    team: 'BUG BUSTERS',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled Server Error:', err);
+  res.status(500).json({ success: false, message: err.message || 'Internal Server Error' });
+});
+
+app.listen(PORT, () => {
+  console.log(`====================================================`);
+  console.log(`🛡️ VIGIL Backend Server Running on Port ${PORT}`);
+  console.log(`Team: BUG BUSTERS`);
+  console.log(`Health Check: http://localhost:${PORT}/health`);
+  console.log(`API Base: http://localhost:${PORT}/api`);
+  console.log(`====================================================`);
+});

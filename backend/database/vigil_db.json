@@ -1,0 +1,811 @@
+{
+  "users": [
+    {
+      "id": "usr_default",
+      "name": "Alex Rivera",
+      "phone": "+1 (555) 234-5678",
+      "emergency_contact": "Sarah Rivera (Mother)",
+      "emergency_phone": "+1 (555) 987-6543",
+      "blood_type": "O+",
+      "medical_notes": "Asthma, No severe drug allergies",
+      "created_at": "2026-09-10T13:26:08.336Z"
+    },
+    {
+      "id": "usr_1789052790344",
+      "name": "Sarah Jenkins",
+      "username": "sarahj",
+      "email": "sarah.j@example.com",
+      "phone": "+1 (555) 345-6789",
+      "password_hash": "a15c0630a9c542ac074df193d789bf8a4c9368de33f14f67c3a44d2aac09f63cfe821df04f2513a70f08b2e4a648ba0a1733283141b994b3d66e316e8712bea0",
+      "emergency_contact": "Sarah Jenkins's Primary Guardian",
+      "emergency_phone": "+1 (555) 345-6789",
+      "blood_type": "Unknown",
+      "medical_notes": "None",
+      "preferences": {
+        "theme": "auto",
+        "safety_timeout_mins": 10
+      },
+      "created_at": "2026-09-10T15:06:30.345Z"
+    },
+    {
+      "id": "usr_1789053835416",
+      "name": "Gaurav Paul",
+      "username": "gauravpaulm",
+      "email": "muddagauravpaul@gmail.com",
+      "phone": "+919000050000",
+      "password_hash": "94b606a027d6a6f608f03885e43890f52e2a4f806a295d5a34d4d8a6afe1557fcfb561009928704a958669deb7bd6477b823fad9b912a420816d93f4b917ace8",
+      "emergency_contact": "Gaurav Paul's Primary Guardian",
+      "emergency_phone": "+919000050000",
+      "blood_type": "Unknown",
+      "medical_notes": "None",
+      "preferences": {
+        "theme": "auto",
+        "safety_timeout_mins": 10
+      },
+      "created_at": "2026-09-10T15:23:55.417Z"
+    },
+    {
+      "id": "usr_1789054074054",
+      "name": "Rohan Sharma",
+      "username": "rohans",
+      "email": "rohan@example.com",
+      "phone": "+91 98765 11111",
+      "password_hash": "a15c0630a9c542ac074df193d789bf8a4c9368de33f14f67c3a44d2aac09f63cfe821df04f2513a70f08b2e4a648ba0a1733283141b994b3d66e316e8712bea0",
+      "emergency_contact": "Rohan Sharma's Primary Guardian",
+      "emergency_phone": "+91 98765 11111",
+      "blood_type": "Unknown",
+      "medical_notes": "None",
+      "preferences": {
+        "theme": "auto",
+        "safety_timeout_mins": 10
+      },
+      "created_at": "2026-09-10T15:27:54.055Z"
+    },
+    {
+      "id": "usr_1789054150366",
+      "name": "Yashwant Ongole",
+      "username": "ongolekitha",
+      "email": "yashwant@gmail.com",
+      "phone": "+919000040000",
+      "password_hash": "3fd84432c8a6e9c6d5e017b115430ce189a334958a284942bdac057e641064fed65ca7f6d673a506d585191ce6800e2430dd2f49d12ed1e16d6fa789fcca405a",
+      "emergency_contact": "Yashwant Ongole's Primary Guardian",
+      "emergency_phone": "+919000040000",
+      "blood_type": "Unknown",
+      "medical_notes": "None",
+      "preferences": {
+        "theme": "auto",
+        "safety_timeout_mins": 10
+      },
+      "created_at": "2026-09-10T15:29:10.370Z"
+    }
+  ],
+  "trusted_contacts": [
+    {
+      "id": "tc_1",
+      "user_id": "usr_default",
+      "name": "Sarah Rivera",
+      "phone": "+1 (555) 987-6543",
+      "relationship": "Mother",
+      "is_primary": false
+    },
+    {
+      "id": "tc_1789052790345",
+      "user_id": "usr_1789052790344",
+      "name": "Sarah Jenkins's Guardian",
+      "phone": "+1 (555) 345-6789",
+      "email": "sarah.j@example.com",
+      "relationship": "Family",
+      "priority": 1,
+      "enabled": true,
+      "is_primary": false
+    },
+    {
+      "id": "tc_1789052790400",
+      "user_id": "usr_default",
+      "name": "Rajesh Kumar",
+      "phone": "+91 98765 43210",
+      "email": "rajesh@example.com",
+      "relationship": "Father",
+      "priority": 1,
+      "enabled": true,
+      "is_primary": true
+    },
+    {
+      "id": "tc_1789053835417",
+      "user_id": "usr_1789053835416",
+      "name": "Gaurav Paul's Guardian",
+      "phone": "+919000050000",
+      "email": "muddagauravpaul@gmail.com",
+      "relationship": "Family",
+      "priority": 1,
+      "enabled": true,
+      "is_primary": true
+    },
+    {
+      "id": "tc_1789054074055",
+      "user_id": "usr_1789054074054",
+      "name": "Rohan Sharma's Guardian",
+      "phone": "+91 98765 11111",
+      "email": "rohan@example.com",
+      "relationship": "Family",
+      "priority": 1,
+      "enabled": true,
+      "is_primary": true
+    },
+    {
+      "id": "tc_1789054150370",
+      "user_id": "usr_1789054150366",
+      "name": "Yashwant Ongole's Guardian",
+      "phone": "+919000040000",
+      "email": "yashwant@gmail.com",
+      "relationship": "Family",
+      "priority": 1,
+      "enabled": true,
+      "is_primary": true
+    },
+    {
+      "id": "tc_1789054231609",
+      "user_id": "usr_default",
+      "name": "Hari kiran ",
+      "phone": "+917659834470",
+      "email": "",
+      "relationship": "Friend",
+      "priority": 3,
+      "enabled": true,
+      "is_primary": false
+    }
+  ],
+  "journeys": [
+    {
+      "id": "jrn_1789057087710",
+      "user_id": "usr_1789053835416",
+      "user_name": "Gaurav Paul",
+      "name": "Safe Travel Commute",
+      "start_location": {
+        "name": "GPS (12.8744, 80.2187)",
+        "lat": 12.874368543039303,
+        "lng": 80.21872268125009
+      },
+      "destination": {
+        "name": "Marina Beach",
+        "lat": 13.0475,
+        "lng": 80.2824
+      },
+      "status": "active",
+      "mode": "safety",
+      "start_time": "2026-09-10T16:18:07.710Z",
+      "end_time": null,
+      "duration_mins": 45,
+      "trusted_contact_id": "tc_1789052790400",
+      "risk_score": 0,
+      "risk_level": "GREEN",
+      "is_offline": false,
+      "break_until": null,
+      "simulated_anomalies": [],
+      "created_at": "2026-09-10T16:18:07.710Z"
+    },
+    {
+      "id": "jrn_1789056673571",
+      "user_id": "usr_1789053835416",
+      "user_name": "Gaurav Paul",
+      "name": "Safe Travel Commute",
+      "start_location": {
+        "name": "GPS (12.8744, 80.2187)",
+        "lat": 12.874394299584775,
+        "lng": 80.2187165216326
+      },
+      "destination": {
+        "name": "dominos sathyabama",
+        "lat": 12.8734977,
+        "lng": 80.2198655
+      },
+      "status": "completed",
+      "mode": "safety",
+      "start_time": "2026-09-10T16:11:13.572Z",
+      "end_time": "2026-09-10T16:11:25.318Z",
+      "duration_mins": 15,
+      "trusted_contact_id": "tc_1789053835417",
+      "risk_score": 0,
+      "risk_level": "GREEN",
+      "is_offline": false,
+      "break_until": null,
+      "simulated_anomalies": [],
+      "created_at": "2026-09-10T16:11:13.572Z"
+    },
+    {
+      "id": "jrn_1789056346578",
+      "user_id": "usr_1789053835416",
+      "user_name": "Gaurav Paul",
+      "name": "Safe Travel Commute",
+      "start_location": {
+        "name": "GPS (12.8744, 80.2187)",
+        "lat": 12.874384243097852,
+        "lng": 80.21873075155627
+      },
+      "destination": {
+        "name": "Dev Apartments",
+        "lat": 12.9806678,
+        "lng": 80.2178346
+      },
+      "status": "completed",
+      "mode": "safety",
+      "start_time": "2026-09-10T16:05:46.579Z",
+      "end_time": "2026-09-10T16:06:22.627Z",
+      "duration_mins": 30,
+      "trusted_contact_id": "tc_1789052790400",
+      "risk_score": 10,
+      "risk_level": "GREEN",
+      "is_offline": false,
+      "break_until": null,
+      "simulated_anomalies": [],
+      "created_at": "2026-09-10T16:05:46.579Z"
+    },
+    {
+      "id": "jrn_1789055490590",
+      "user_id": "usr_1789053835416",
+      "user_name": "Gaurav Paul",
+      "name": "Safe Travel Commute",
+      "start_location": {
+        "name": "GPS (12.8744, 80.2187)",
+        "lat": 12.874408902151686,
+        "lng": 80.21871590390863
+      },
+      "destination": {
+        "name": "sathyabama",
+        "lat": 13.0475,
+        "lng": 80.2824
+      },
+      "status": "completed",
+      "mode": "safety",
+      "start_time": "2026-09-10T15:51:30.590Z",
+      "end_time": "2026-09-10T15:54:54.655Z",
+      "duration_mins": 30,
+      "trusted_contact_id": "tc_1789054231609",
+      "risk_score": 10,
+      "risk_level": "GREEN",
+      "is_offline": false,
+      "break_until": null,
+      "simulated_anomalies": [],
+      "created_at": "2026-09-10T15:51:30.590Z"
+    },
+    {
+      "id": "jrn_1789054350857",
+      "user_id": "usr_1789053835416",
+      "user_name": "Gaurav Paul",
+      "name": "Safe Travel Commute",
+      "start_location": {
+        "name": "Current GPS Location",
+        "lat": 12.9716,
+        "lng": 77.5946
+      },
+      "destination": {
+        "name": "Phoenix Marketcity",
+        "lat": 12.9915,
+        "lng": 80.217
+      },
+      "status": "completed",
+      "mode": "safety",
+      "start_time": "2026-09-10T15:32:30.857Z",
+      "end_time": "2026-09-10T15:46:22.632Z",
+      "duration_mins": 60,
+      "trusted_contact_id": "tc_1789052790400",
+      "risk_score": 5,
+      "risk_level": "GREEN",
+      "is_offline": false,
+      "break_until": "2026-09-10T15:55:14.791Z",
+      "simulated_anomalies": [
+        "ROUTE_DEVIATION",
+        "PROLONGED_STOP",
+        "MULTIPLE_ANOMALIES",
+        "ETA_DELAY",
+        "DIRECTION_CHANGE"
+      ],
+      "created_at": "2026-09-10T15:32:30.857Z"
+    },
+    {
+      "id": "jrn_1789053903348",
+      "user_id": "usr_default",
+      "name": "Safe Travel Commute",
+      "start_location": {
+        "name": "GPS (12.8744, 80.2187)",
+        "lat": 12.874401239273775,
+        "lng": 80.21871626454444
+      },
+      "destination": {
+        "name": "Phoenix Marketcity",
+        "lat": 12.9915,
+        "lng": 80.217
+      },
+      "status": "cancelled",
+      "mode": "safety",
+      "start_time": "2026-09-10T15:25:03.348Z",
+      "end_time": "2026-09-10T15:32:30.857Z",
+      "duration_mins": 60,
+      "trusted_contact_id": "tc_1789052790400",
+      "risk_score": 0,
+      "risk_level": "GREEN",
+      "is_offline": false,
+      "break_until": null,
+      "simulated_anomalies": [],
+      "created_at": "2026-09-10T15:25:03.348Z"
+    },
+    {
+      "id": "jrn_1789052903401",
+      "user_id": "usr_default",
+      "name": "Safe Travel Commute",
+      "start_location": {
+        "name": "Current GPS Location",
+        "lat": 12.9716,
+        "lng": 77.5946
+      },
+      "destination": {
+        "name": "Marina Beach",
+        "lat": 13.0475,
+        "lng": 80.2824
+      },
+      "status": "cancelled",
+      "mode": "safety",
+      "start_time": "2026-09-10T15:08:23.401Z",
+      "end_time": "2026-09-10T15:25:03.348Z",
+      "duration_mins": 60,
+      "trusted_contact_id": "tc_1789052790400",
+      "risk_score": 10,
+      "risk_level": "GREEN",
+      "is_offline": false,
+      "break_until": null,
+      "simulated_anomalies": [
+        "DIRECTION_CHANGE"
+      ],
+      "created_at": "2026-09-10T15:08:23.401Z"
+    },
+    {
+      "id": "jrn_1789052879677",
+      "user_id": "usr_default",
+      "name": "Safe Travel Commute",
+      "start_location": {
+        "name": "GPS (12.8744, 80.2187)",
+        "lat": 12.874417957890927,
+        "lng": 80.21869125429072
+      },
+      "destination": {
+        "name": "Phoenix Marketcity",
+        "lat": 12.9915,
+        "lng": 80.217
+      },
+      "status": "cancelled",
+      "mode": "safety",
+      "start_time": "2026-09-10T15:07:59.677Z",
+      "end_time": "2026-09-10T15:08:23.401Z",
+      "duration_mins": 60,
+      "trusted_contact_id": "tc_1789052790345",
+      "risk_score": 0,
+      "risk_level": "GREEN",
+      "is_offline": false,
+      "break_until": null,
+      "simulated_anomalies": [],
+      "created_at": "2026-09-10T15:07:59.677Z"
+    },
+    {
+      "id": "jrn_1789046780277",
+      "user_id": "usr_default",
+      "name": "Hackathon Test Commute",
+      "start_location": {
+        "lng": 77.5946,
+        "name": "Central Tech Park",
+        "lat": 12.9716
+      },
+      "destination": {
+        "lng": 77.6245,
+        "name": "Grand Residence",
+        "lat": 12.9352
+      },
+      "status": "cancelled",
+      "mode": "safety",
+      "start_time": "2026-09-10T13:26:20.277Z",
+      "end_time": "2026-09-10T15:07:59.677Z",
+      "duration_mins": 45,
+      "trusted_contact_id": "tc_1",
+      "risk_score": 0,
+      "risk_level": "GREEN",
+      "is_offline": false,
+      "break_until": null,
+      "simulated_anomalies": [],
+      "created_at": "2026-09-10T13:26:20.277Z"
+    },
+    {
+      "id": "jrn_demo_past",
+      "user_id": "usr_default",
+      "name": "Evening Commute Home",
+      "start_location": {
+        "name": "Tech Hub Office",
+        "lat": 12.9716,
+        "lng": 77.5946
+      },
+      "destination": {
+        "name": "Greenwood Residences",
+        "lat": 12.9352,
+        "lng": 77.6245
+      },
+      "status": "completed",
+      "mode": "safety",
+      "start_time": "2026-09-09T13:26:08.337Z",
+      "end_time": "2026-09-09T14:26:08.337Z",
+      "distance_km": 6.4,
+      "duration_mins": 28,
+      "risk_score": 15,
+      "risk_level": "GREEN",
+      "max_risk_score": 25,
+      "alerts_count": 0
+    }
+  ],
+  "location_updates": [
+    {
+      "id": "loc_1789046780277",
+      "journey_id": "jrn_1789046780277",
+      "latitude": 12.9716,
+      "longitude": 77.5946,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 95,
+      "network": "online",
+      "timestamp": "2026-09-10T13:26:20.278Z"
+    },
+    {
+      "id": "loc_1789047406797_cq9w",
+      "journey_id": "jrn_1789046780277",
+      "latitude": 12.9796,
+      "longitude": 77.6036,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T13:36:46.797Z"
+    },
+    {
+      "id": "loc_1789047408042_jxd1",
+      "journey_id": "jrn_1789046780277",
+      "latitude": 12.9796,
+      "longitude": 77.6036,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T13:36:48.042Z"
+    },
+    {
+      "id": "loc_1789047768365_jdl2",
+      "journey_id": "jrn_1789046780277",
+      "latitude": 12.9796,
+      "longitude": 77.6036,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T13:42:48.365Z"
+    },
+    {
+      "id": "loc_1789052879677",
+      "journey_id": "jrn_1789052879677",
+      "latitude": 12.874417957890927,
+      "longitude": 80.21869125429072,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 95,
+      "network": "online",
+      "timestamp": "2026-09-10T15:07:59.677Z"
+    },
+    {
+      "id": "loc_1789052903401",
+      "journey_id": "jrn_1789052903401",
+      "latitude": 12.9716,
+      "longitude": 77.5946,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 95,
+      "network": "online",
+      "timestamp": "2026-09-10T15:08:23.401Z"
+    },
+    {
+      "id": "loc_1789052994324_u5i2",
+      "journey_id": "jrn_1789052903401",
+      "latitude": 12.9666,
+      "longitude": 77.5886,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:09:54.324Z"
+    },
+    {
+      "id": "loc_1789053903348",
+      "journey_id": "jrn_1789053903348",
+      "latitude": 12.874401239273775,
+      "longitude": 80.21871626454444,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 95,
+      "network": "online",
+      "timestamp": "2026-09-10T15:25:03.348Z"
+    },
+    {
+      "id": "loc_1789054350857",
+      "journey_id": "jrn_1789054350857",
+      "latitude": 12.9716,
+      "longitude": 77.5946,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 95,
+      "network": "online",
+      "timestamp": "2026-09-10T15:32:30.857Z"
+    },
+    {
+      "id": "loc_1789054356365_382l",
+      "journey_id": "jrn_1789054350857",
+      "latitude": 12.9716,
+      "longitude": 77.5946,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:32:36.365Z"
+    },
+    {
+      "id": "loc_1789054389801_ad66",
+      "journey_id": "jrn_1789054350857",
+      "latitude": 12.9716,
+      "longitude": 77.5946,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:33:09.801Z"
+    },
+    {
+      "id": "loc_1789054797148_9332",
+      "journey_id": "jrn_1789054350857",
+      "latitude": 12.9796,
+      "longitude": 77.6036,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:39:57.148Z"
+    },
+    {
+      "id": "loc_1789054798265_9zwr",
+      "journey_id": "jrn_1789054350857",
+      "latitude": 12.9796,
+      "longitude": 77.6036,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:39:58.265Z"
+    },
+    {
+      "id": "loc_1789054818087_3933",
+      "journey_id": "jrn_1789054350857",
+      "latitude": 12.9916,
+      "longitude": 77.6186,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:40:18.087Z"
+    },
+    {
+      "id": "loc_1789054820500_c7z7",
+      "journey_id": "jrn_1789054350857",
+      "latitude": 12.9916,
+      "longitude": 77.6186,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:40:20.500Z"
+    },
+    {
+      "id": "loc_1789054821525_3u3f",
+      "journey_id": "jrn_1789054350857",
+      "latitude": 12.9866,
+      "longitude": 77.6126,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:40:21.525Z"
+    },
+    {
+      "id": "loc_1789054822966_w0wj",
+      "journey_id": "jrn_1789054350857",
+      "latitude": 12.981599999999998,
+      "longitude": 77.6066,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:40:22.966Z"
+    },
+    {
+      "id": "loc_1789054823750_e7d9",
+      "journey_id": "jrn_1789054350857",
+      "latitude": 12.981599999999998,
+      "longitude": 77.6066,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:40:23.750Z"
+    },
+    {
+      "id": "loc_1789055490590",
+      "journey_id": "jrn_1789055490590",
+      "latitude": 12.874408902151686,
+      "longitude": 80.21871590390863,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 95,
+      "network": "online",
+      "timestamp": "2026-09-10T15:51:30.590Z"
+    },
+    {
+      "id": "loc_1789055666845_fzcl",
+      "journey_id": "jrn_1789055490590",
+      "latitude": 12.882408902151685,
+      "longitude": 80.22771590390863,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:54:26.845Z"
+    },
+    {
+      "id": "loc_1789055668214_xxmt",
+      "journey_id": "jrn_1789055490590",
+      "latitude": 12.890408902151684,
+      "longitude": 80.23671590390863,
+      "accuracy": 10,
+      "speed": 32,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:54:28.214Z"
+    },
+    {
+      "id": "loc_1789055670238_mxhk",
+      "journey_id": "jrn_1789055490590",
+      "latitude": 12.890408902151684,
+      "longitude": 80.23671590390863,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 94,
+      "network": "online",
+      "timestamp": "2026-09-10T15:54:30.238Z"
+    },
+    {
+      "id": "loc_1789056346579",
+      "journey_id": "jrn_1789056346578",
+      "latitude": 12.874384243097852,
+      "longitude": 80.21873075155627,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 95,
+      "network": "online",
+      "timestamp": "2026-09-10T16:05:46.579Z"
+    },
+    {
+      "id": "loc_1789056673572",
+      "journey_id": "jrn_1789056673571",
+      "latitude": 12.874394299584775,
+      "longitude": 80.2187165216326,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 95,
+      "network": "online",
+      "timestamp": "2026-09-10T16:11:13.572Z"
+    },
+    {
+      "id": "loc_1789057087710",
+      "journey_id": "jrn_1789057087710",
+      "latitude": 12.874368543039303,
+      "longitude": 80.21872268125009,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 95,
+      "network": "online",
+      "timestamp": "2026-09-10T16:18:07.710Z"
+    }
+  ],
+  "risk_events": [],
+  "safety_checks": [],
+  "alerts": [
+    {
+      "id": "sos_1789053920463",
+      "journey_id": "unknown",
+      "user_name": "Alex Rivera",
+      "alert_type": "EMERGENCY_SOS",
+      "message": "🚨 CRITICAL SOS DISPATCHED BY USER! Emergency notification sent to guardian and emergency contacts.",
+      "risk_score": 100,
+      "status": "active",
+      "is_silent": false,
+      "timestamp": "2026-09-10T15:25:20.463Z",
+      "location": {
+        "lat": 12.9716,
+        "lng": 77.5946
+      },
+      "emergency_phone": "+1 (555) 987-6543"
+    },
+    {
+      "id": "sos_1789047413011",
+      "journey_id": "unknown",
+      "user_name": "Alex Rivera",
+      "alert_type": "EMERGENCY_SOS",
+      "message": "🚨 CRITICAL SOS DISPATCHED BY USER! Emergency notification sent to guardian and emergency contacts.",
+      "risk_score": 100,
+      "status": "active",
+      "is_silent": false,
+      "timestamp": "2026-09-10T13:36:53.011Z",
+      "location": {
+        "lat": 12.9716,
+        "lng": 77.5946
+      },
+      "emergency_phone": "+1 (555) 987-6543"
+    },
+    {
+      "id": "sos_1789047216466",
+      "journey_id": "unknown",
+      "user_name": "Alex Rivera",
+      "alert_type": "EMERGENCY_SOS",
+      "message": "🚨 CRITICAL SOS DISPATCHED BY USER! Emergency notification sent to guardian and emergency contacts.",
+      "risk_score": 100,
+      "status": "active",
+      "is_silent": false,
+      "timestamp": "2026-09-10T13:33:36.466Z",
+      "location": {
+        "lat": 12.9716,
+        "lng": 77.5946
+      },
+      "emergency_phone": "+1 (555) 987-6543"
+    },
+    {
+      "id": "sos_1789046962188",
+      "journey_id": "unknown",
+      "user_name": "Alex Rivera",
+      "alert_type": "EMERGENCY_SOS",
+      "message": "🚨 CRITICAL SOS DISPATCHED BY USER! Emergency notification sent to guardian and emergency contacts.",
+      "risk_score": 100,
+      "status": "active",
+      "is_silent": false,
+      "timestamp": "2026-09-10T13:29:22.188Z",
+      "location": {
+        "lat": 12.9716,
+        "lng": 77.5946
+      },
+      "emergency_phone": "+1 (555) 987-6543"
+    }
+  ]
+}

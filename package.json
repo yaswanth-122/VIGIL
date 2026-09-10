@@ -1,0 +1,19 @@
+{
+  "name": "vigil-safety-companion",
+  "version": "1.0.0",
+  "description": "VIGIL - AI-Assisted Virtual Safety Companion (Team BUG BUSTERS)",
+  "main": "backend/server.js",
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "backend": "cd backend && npm start",
+    "backend:dev": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "build": "cd frontend && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "author": "Team BUG BUSTERS",
+  "license": "MIT"
+}
