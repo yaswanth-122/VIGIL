@@ -10,8 +10,7 @@
     "frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
     "build": "node build.cjs",
-    "vercel-build": "node build.cjs",
-    "postinstall": "cd backend && npm install"
+    "vercel-build": "node build.cjs"
   },
   "dependencies": {
     "cors": "^2.8.5",
