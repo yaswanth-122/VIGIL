@@ -157,6 +157,34 @@
   ],
   "journeys": [
     {
+      "id": "jrn_1789059299202",
+      "user_id": "usr_1789053835416",
+      "user_name": "Gaurav Paul",
+      "name": "Safe Travel Commute",
+      "start_location": {
+        "name": "GPS (12.8744, 80.2187)",
+        "lat": 12.874422364997715,
+        "lng": 80.21870856387663
+      },
+      "destination": {
+        "name": "Marina Beach",
+        "lat": 13.0475,
+        "lng": 80.2824
+      },
+      "status": "completed",
+      "mode": "safety",
+      "start_time": "2026-09-10T16:54:59.202Z",
+      "end_time": "2026-09-10T17:09:41.236Z",
+      "duration_mins": 45,
+      "trusted_contact_id": "tc_1789052790400",
+      "risk_score": 0,
+      "risk_level": "GREEN",
+      "is_offline": false,
+      "break_until": null,
+      "simulated_anomalies": [],
+      "created_at": "2026-09-10T16:54:59.202Z"
+    },
+    {
       "id": "jrn_1789057087710",
       "user_id": "usr_1789053835416",
       "user_name": "Gaurav Paul",
@@ -171,10 +199,10 @@
         "lat": 13.0475,
         "lng": 80.2824
       },
-      "status": "active",
+      "status": "cancelled",
       "mode": "safety",
       "start_time": "2026-09-10T16:18:07.710Z",
-      "end_time": null,
+      "end_time": "2026-09-10T16:54:59.202Z",
       "duration_mins": 45,
       "trusted_contact_id": "tc_1789052790400",
       "risk_score": 0,
@@ -738,11 +766,39 @@
       "battery": 95,
       "network": "online",
       "timestamp": "2026-09-10T16:18:07.710Z"
+    },
+    {
+      "id": "loc_1789059299202",
+      "journey_id": "jrn_1789059299202",
+      "latitude": 12.874422364997715,
+      "longitude": 80.21870856387663,
+      "accuracy": 10,
+      "speed": 0,
+      "heading": 0,
+      "battery": 95,
+      "network": "online",
+      "timestamp": "2026-09-10T16:54:59.202Z"
     }
   ],
   "risk_events": [],
   "safety_checks": [],
   "alerts": [
+    {
+      "id": "sos_1789062634220",
+      "journey_id": "unknown",
+      "user_name": "Gaurav Paul",
+      "alert_type": "EMERGENCY_SOS",
+      "message": "🚨 CRITICAL SOS DISPATCHED BY Gaurav Paul! Emergency notification sent to guardian and emergency contacts.",
+      "risk_score": 100,
+      "status": "active",
+      "is_silent": false,
+      "timestamp": "2026-09-10T17:50:34.220Z",
+      "location": {
+        "lat": 12.9716,
+        "lng": 77.5946
+      },
+      "emergency_phone": "+919000050000"
+    },
     {
       "id": "sos_1789053920463",
       "journey_id": "unknown",

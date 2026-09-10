@@ -36,11 +36,15 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, message: err.message || 'Internal Server Error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`🛡️ VIGIL Backend Server Running on Port ${PORT}`);
-  console.log(`Team: BUG BUSTERS`);
-  console.log(`Health Check: http://localhost:${PORT}/health`);
-  console.log(`API Base: http://localhost:${PORT}/api`);
-  console.log(`====================================================`);
-});
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`====================================================`);
+    console.log(`🛡️ VIGIL Backend Server Running on Port ${PORT}`);
+    console.log(`Team: BUG BUSTERS`);
+    console.log(`Health Check: http://localhost:${PORT}/health`);
+    console.log(`API Base: http://localhost:${PORT}/api`);
+    console.log(`====================================================`);
+  });
+}
+
+module.exports = app;
