@@ -124,7 +124,7 @@ export default function SOSModal({ isOpen, onClose, activeJourney, userProfile, 
               <span>Primary Guardian:</span>
             </div>
             <p className="font-bold text-white">
-              {userProfile?.emergency_contact || 'Sarah Rivera (Mother)'}
+              Hari Kiran (+917659834470)
             </p>
           </div>
 
@@ -147,6 +147,22 @@ export default function SOSModal({ isOpen, onClose, activeJourney, userProfile, 
           </div>
         </div>
 
+        {/* Direct Call to Primary Guardian Banner */}
+        <div className="bg-gradient-to-r from-blue-900/60 to-cyan-900/60 border border-cyan-500/50 p-4 rounded-2xl flex items-center justify-between gap-3 shadow-lg shadow-blue-500/20">
+          <div>
+            <span className="text-[10px] uppercase font-bold text-cyan-300 tracking-wider">Enabled Primary Guardian</span>
+            <h4 className="text-base font-extrabold text-white font-outfit">HARI KIRAN</h4>
+            <p className="text-[11px] text-cyan-200/80">+917659834470</p>
+          </div>
+          <a
+            href="tel:+917659834470"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-cyan-500/30 border border-cyan-300/40 transition-all shrink-0 active:scale-95"
+          >
+            <Phone className="w-4 h-4 animate-bounce" />
+            <span>DIRECT CALL</span>
+          </a>
+        </div>
+
         {/* National Emergency Hotline Banner */}
         <div className="bg-red-950/60 border border-red-500/50 p-4 rounded-2xl flex items-center justify-between gap-3">
           <div>
@@ -156,7 +172,7 @@ export default function SOSModal({ isOpen, onClose, activeJourney, userProfile, 
           </div>
           <a
             href="tel:112"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-600/40 border border-red-400/30 transition-all shrink-0"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-600/40 border border-red-400/30 transition-all shrink-0 active:scale-95"
           >
             <Phone className="w-4 h-4" />
             <span>CALL 112</span>

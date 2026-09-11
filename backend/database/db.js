@@ -19,8 +19,8 @@ const defaultData = {
       email: 'alex.rivera@example.com',
       phone: '+1 (555) 234-5678',
       password_hash: hashPassword('password123'),
-      emergency_contact: 'Sarah Rivera (Mother)',
-      emergency_phone: '+1 (555) 987-6543',
+      emergency_contact: 'Hari Kiran (Primary Guardian)',
+      emergency_phone: '+917659834470',
       blood_type: 'O+',
       medical_notes: 'Asthma, No severe drug allergies',
       preferences: {
@@ -34,10 +34,10 @@ const defaultData = {
     {
       id: 'tc_1',
       user_id: 'usr_default',
-      name: 'Sarah Rivera',
-      phone: '+1 (555) 987-6543',
-      email: 'sarah.rivera@example.com',
-      relationship: 'Mother',
+      name: 'Hari Kiran',
+      phone: '+917659834470',
+      email: 'harikiran@example.com',
+      relationship: 'Primary Guardian',
       priority: 1,
       enabled: true,
       is_primary: true
