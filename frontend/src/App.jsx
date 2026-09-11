@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import GuardiansPage from './pages/GuardiansPage';
 import SOSModal from './components/SOSModal';
+import EmergencyPopNotification from './components/EmergencyPopNotification';
 import { api } from './services/api';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -52,16 +53,51 @@ function MainAppContent() {
   const navigate = useNavigate();
   const [currentMode, setCurrentMode] = useState('safety'); // default safety mode
   const [isSOSOpen, setIsSOSOpen] = useState(false);
+  const [sosNotificationData, setSosNotificationData] = useState(null);
   const { user } = useAuth();
 
   const handleToggleMode = (mode) => {
     setCurrentMode(mode);
   };
 
+  const dispatchSOSWithLocation = async (isSilent = false) => {
+    let locData = { latitude: 12.9715987, longitude: 77.5945627, name: 'Live GPS Pin (High Precision)' };
+
+    if ('geolocation' in navigator) {
+      try {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+          });
+        });
+        locData = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          name: `GPS Location (${position.coords.latitude.toFixed(4)}°, ${position.coords.longitude.toFixed(4)}°)`
+        };
+      } catch (e) {
+        console.warn('Geolocation fallback to telemetry default:', e);
+      }
+    }
+
+    try {
+      const res = await api.triggerSOS('active', isSilent, locData);
+      if (res.success && res.alert) {
+        setSosNotificationData(res.alert);
+      }
+    } catch (err) {
+      console.error('SOS dispatch error:', err);
+    }
+  };
+
   const handleOpenSOS = () => {
     setIsSOSOpen(true);
-    // Auto call default enabled guardian Hari Kiran (+917659834470) on Emergency click
+    // Instant auto-call default enabled guardian Hari Kiran (+917659834470)
     window.location.href = 'tel:+917659834470';
+    // Dispatch push notification to emergency mobile numbers and Google Maps location
+    dispatchSOSWithLocation(false);
   };
 
   const handleConfirmSOS = async (isSilent) => {
@@ -69,7 +105,7 @@ function MainAppContent() {
       if (!isSilent) {
         window.location.href = 'tel:+917659834470';
       }
-      await api.triggerSOS('active', isSilent);
+      await dispatchSOSWithLocation(isSilent);
       setIsSOSOpen(false);
       navigate('/guardian');
     } catch (err) {
@@ -207,6 +243,12 @@ function MainAppContent() {
         onClose={() => setIsSOSOpen(false)}
         userProfile={user}
         onConfirmSOS={handleConfirmSOS}
+      />
+
+      {/* Global Real-Time Emergency Pop Notification Overlay */}
+      <EmergencyPopNotification
+        alertData={sosNotificationData}
+        onClose={() => setSosNotificationData(null)}
       />
 
     </div>

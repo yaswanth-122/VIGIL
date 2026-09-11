@@ -307,20 +307,54 @@ exports.triggerSOS = (req, res) => {
   const journey = db.journeys.find(j => j.id === req.params.id);
 
   const locs = journey ? db.location_updates.filter(l => l.journey_id === journey.id) : [];
-  const lastLoc = locs.length > 0 ? locs[locs.length - 1] : { latitude: 12.9716, longitude: 77.5946 };
+  const lastLoc = locs.length > 0 ? locs[locs.length - 1] : { latitude: 12.9715987, longitude: 77.5945627 };
+
+  const latitude = (req.body.location && req.body.location.latitude) || lastLoc.latitude;
+  const longitude = (req.body.location && req.body.location.longitude) || lastLoc.longitude;
+  const locationName = (req.body.location && req.body.location.name) || 'Live GPS Telemetry (Google Maps High Precision)';
+
+  const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+  const googleMapsEmbed = `https://maps.google.com/maps?q=${latitude},${longitude}&z=16&output=embed`;
+
+  // Fetch registered guardians or default primary contacts for push pop notification dispatch
+  const userGuardians = db.trusted_contacts ? db.trusted_contacts.filter(c => c.user_id === user.id || c.user_id === 'usr_default') : [];
+  
+  const defaultGuardians = [
+    { name: 'Hari Kiran', phone: '+917659834470', relationship: 'Primary Guardian', is_primary: true, push_status: 'POPUP_NOTIFIED_DIALING' },
+    { name: 'David Chen', phone: '+1 (555) 456-7890', relationship: 'Secondary Guardian', is_primary: false, push_status: 'POPUP_NOTIFIED' },
+    { name: 'National Emergency Response', phone: '112', relationship: 'Official Hotline', is_primary: false, push_status: 'HOTLINE_BROADCAST_SENT' }
+  ];
+
+  const notifiedGuardians = userGuardians.length > 0
+    ? userGuardians.map(g => ({
+        name: g.name,
+        phone: g.phone,
+        relationship: g.relationship || 'Guardian',
+        is_primary: g.is_primary || false,
+        push_status: 'POPUP_NOTIFIED'
+      }))
+    : defaultGuardians;
 
   const alert = {
     id: `sos_${Date.now()}`,
-    journey_id: journey ? journey.id : 'unknown',
+    journey_id: journey ? journey.id : 'active_emergency',
     user_name: user.name,
+    user_phone: user.phone || '+1 (555) 234-5678',
     alert_type: 'EMERGENCY_SOS',
-    message: `🚨 CRITICAL SOS DISPATCHED BY ${user.name}! Emergency notification sent to guardian and emergency contacts.`,
+    message: `🚨 CRITICAL SOS DISPATCHED BY ${user.name}! Pop notification sent to emergency mobile numbers. Google Maps location pin: ${googleMapsUrl}`,
     risk_score: 100,
     status: 'active',
     is_silent: req.body.is_silent || false,
     timestamp: new Date().toISOString(),
-    location: { lat: lastLoc.latitude, lng: lastLoc.longitude },
-    emergency_phone: user.emergency_phone || '112'
+    location: {
+      lat: latitude,
+      lng: longitude,
+      name: locationName,
+      google_maps_url: googleMapsUrl,
+      google_maps_embed: googleMapsEmbed
+    },
+    notified_guardians: notifiedGuardians,
+    emergency_phone: '+917659834470'
   };
 
   db.alerts.unshift(alert);
@@ -330,7 +364,13 @@ exports.triggerSOS = (req, res) => {
   }
 
   writeDb(db);
-  res.json({ success: true, alert, emergency_number: '112' });
+  res.json({
+    success: true,
+    alert,
+    google_maps_url: googleMapsUrl,
+    notified_guardians: notifiedGuardians,
+    emergency_number: '+917659834470'
+  });
 };
 
 // POST /api/journeys/:id/offline

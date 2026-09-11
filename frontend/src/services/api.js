@@ -141,12 +141,12 @@ export const api = {
   },
 
   // SOS
-  async triggerSOS(journeyId, isSilent = false) {
+  async triggerSOS(journeyId, isSilent = false, locationData = null) {
     const targetId = journeyId || 'active';
     return safeFetch(`${API_BASE}/journeys/${targetId}/sos`, {
       method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify({ is_silent: isSilent })
+      body: JSON.stringify({ is_silent: isSilent, location: locationData })
     });
   },
 
