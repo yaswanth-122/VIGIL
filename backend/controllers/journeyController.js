@@ -80,7 +80,7 @@ exports.getActiveJourney = (req, res) => {
 exports.createJourney = (req, res) => {
   const db = readDb();
   const user = extractUser(req, db);
-  const { name, start_location, destination, duration_mins, trusted_contact_id, mode } = req.body;
+  const { name, start_location, destination, duration_mins, safety_timeout_mins, trusted_contact_id, mode } = req.body;
 
   // Mark existing active journey as completed/cancelled
   db.journeys.forEach(j => {
@@ -102,6 +102,7 @@ exports.createJourney = (req, res) => {
     start_time: new Date().toISOString(),
     end_time: null,
     duration_mins: parseInt(duration_mins) || 60,
+    safety_timeout_mins: parseInt(safety_timeout_mins) || 10,
     trusted_contact_id: trusted_contact_id || 'tc_1',
     risk_score: 0,
     risk_level: 'GREEN',
@@ -298,6 +299,22 @@ exports.handleSafetyCheck = (req, res) => {
 
   writeDb(db);
   res.json({ success: true, journey, resolved_check: activeCheck });
+};
+
+// POST /api/journeys/:id/safety-timeout
+exports.updateSafetyTimeout = (req, res) => {
+  const db = readDb();
+  const { safety_timeout_mins } = req.body;
+  const journey = db.journeys.find(j => j.id === req.params.id);
+
+  if (!journey) {
+    return res.status(404).json({ success: false, message: 'Journey not found' });
+  }
+
+  const mins = parseInt(safety_timeout_mins) || 10;
+  journey.safety_timeout_mins = mins;
+  writeDb(db);
+  res.json({ success: true, journey, message: `Safety check popup timeout set to ${mins} minutes.` });
 };
 
 // POST /api/journeys/:id/sos

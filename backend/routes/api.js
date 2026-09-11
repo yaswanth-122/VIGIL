@@ -33,6 +33,7 @@ router.get('/journeys/:id/location', controller.getJourneyLocations);
 
 // Safety Check, SOS, Simulation & Device Offline
 router.post('/journeys/:id/safety-check', controller.handleSafetyCheck);
+router.post('/journeys/:id/safety-timeout', controller.updateSafetyTimeout);
 router.post('/journeys/:id/sos', controller.triggerSOS);
 router.post('/journeys/:id/offline', controller.simulateOffline);
 router.post('/journeys/:id/simulation', controller.setSimulationEvent);

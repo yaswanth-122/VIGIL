@@ -10,10 +10,12 @@ export default function SafetyCheckModal({
   onRespondBreak,
   onRespondExtend,
   onTriggerSOS,
+  onUpdateTimeoutMins,
   triggerReason,
   timeoutMinutes = 10
 }) {
   const [showBreakOptions, setShowBreakOptions] = useState(false);
+  const [showDurationOptions, setShowDurationOptions] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(timeoutMinutes * 60);
   const [noResponseTriggered, setNoResponseTriggered] = useState(false);
   const [aiMessage, setAiMessage] = useState('Checking in with VIGIL AI Virtual Companion...');
@@ -29,7 +31,7 @@ export default function SafetyCheckModal({
     setNoResponseTriggered(false);
 
     // Fetch Gemini AI Conversational Check-in Prompt
-    api.getAICheckIn(triggerReason).then((res) => {
+    api.getAICheckIn(triggerReason || 'PROLONGED_ACTIVITY').then((res) => {
       if (res.success && res.ai_message) {
         setAiMessage(res.ai_message);
         speakVoiceAnnouncement(res.ai_message);
@@ -55,7 +57,7 @@ export default function SafetyCheckModal({
     startAlarm();
     window.location.href = 'tel:+917659834470';
     speakVoiceAnnouncement(
-      "No safety check response detected. Dialing primary guardian Hari Kiran automatically."
+      "No safety check response detected after prolonged activity. Dialing primary guardian Hari Kiran automatically."
     );
   };
 
@@ -77,7 +79,7 @@ export default function SafetyCheckModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-lg animate-fadeIn">
-      <div className="relative w-full max-w-md bg-[#121826] border border-amber-500/40 rounded-2xl p-6 shadow-2xl shadow-amber-500/20 text-white flex flex-col gap-5">
+      <div className="relative w-full max-w-md bg-[#121826] border-2 border-amber-500/50 rounded-3xl p-6 shadow-2xl shadow-amber-500/30 text-white flex flex-col gap-5">
         
         {/* Close Button */}
         <button
@@ -90,14 +92,17 @@ export default function SafetyCheckModal({
           <X className="w-5 h-5" />
         </button>
 
-        {/* Warning Icon Banner */}
-        <div className="flex items-center gap-4">
+        {/* Header Banner */}
+        <div className="flex items-center gap-4 border-b border-amber-500/20 pb-4">
           <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 glow-amber shrink-0 animate-bounce">
             <AlertTriangle className="w-8 h-8" />
           </div>
           <div>
-            <h2 className="text-xl font-extrabold text-white font-outfit tracking-wide">ARE YOU SAFE?</h2>
-            <p className="text-xs text-amber-300 font-medium">Automated Safety Check Prompt</p>
+            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+              ⚠️ PROLONGED ACTIVITY DETECTED
+            </span>
+            <h2 className="text-2xl font-extrabold text-white font-outfit tracking-wide mt-0.5">ARE YOU SAFE?</h2>
+            <p className="text-xs text-amber-300 font-medium">{triggerReason || 'Unexpected stop or prolonged inactivity detected'}</p>
           </div>
         </div>
 
@@ -123,9 +128,9 @@ export default function SafetyCheckModal({
           </p>
         </div>
 
-        {/* Countdown Timer Display */}
-        <div className={`p-3.5 rounded-xl border flex items-center justify-between gap-3 text-xs ${
-          noResponseTriggered ? 'bg-red-500/20 border-red-500/50 text-red-300 glow-red animate-pulse' : 'bg-amber-500/10 border-amber-500/20 text-amber-300'
+        {/* Countdown Timer & Duration Indicator Display */}
+        <div className={`p-3.5 rounded-2xl border flex items-center justify-between gap-3 text-xs ${
+          noResponseTriggered ? 'bg-red-500/20 border-red-500/50 text-red-300 glow-red animate-pulse' : 'bg-amber-500/10 border-amber-500/30 text-amber-300'
         }`}>
           <div>
             <div className="text-[10px] uppercase font-bold text-gray-400">Response Countdown</div>
@@ -134,22 +139,54 @@ export default function SafetyCheckModal({
             </div>
           </div>
           <div className="text-right">
-            <span className="text-[11px] font-bold">
-              {noResponseTriggered ? '🚨 NO RESPONSE DETECTED' : `Response required within ${timeoutMinutes} mins`}
+            <span className="text-[11px] font-bold block">
+              {noResponseTriggered ? '🚨 NO RESPONSE DETECTED' : `Safety Popup Interval: ${timeoutMinutes} Mins`}
             </span>
+            <button
+              onClick={() => setShowDurationOptions(!showDurationOptions)}
+              className="text-[10px] font-bold text-cyan-400 hover:underline mt-0.5"
+            >
+              Change Duration →
+            </button>
           </div>
         </div>
 
-        {/* Primary Options */}
+        {/* Duration Selection Input Mode */}
+        {showDurationOptions && (
+          <div className="bg-slate-950/80 p-3.5 rounded-2xl border border-cyan-500/40 space-y-2 animate-fadeIn">
+            <div className="flex items-center justify-between text-xs font-bold text-cyan-300">
+              <span>Select Prolonged Activity Safety Check Duration:</span>
+              <button onClick={() => setShowDurationOptions(false)} className="text-gray-400 hover:text-white">✕</button>
+            </div>
+            <div className="grid grid-cols-5 gap-1.5">
+              {[2, 5, 10, 15, 30].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => {
+                    if (onUpdateTimeoutMins) onUpdateTimeoutMins(m);
+                    setShowDurationOptions(false);
+                  }}
+                  className={`py-2 rounded-xl text-xs font-bold border transition-all ${
+                    timeoutMinutes === m ? 'bg-cyan-500/30 text-cyan-300 border-cyan-400' : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10'
+                  }`}
+                >
+                  {m}m
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Primary Action Buttons */}
         {!showBreakOptions ? (
           <div className="space-y-2.5">
             {/* I'm Safe Button */}
             <button
               onClick={handleSafeAction}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 border border-emerald-400/30 transition-all active:scale-98"
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 border border-emerald-400/30 transition-all active:scale-98"
             >
               <ShieldCheck className="w-5 h-5" />
-              <span>I'M SAFE (RESET WARNING)</span>
+              <span>YES, I'M SAFE (RESET ALERT)</span>
             </button>
 
             {/* Taking a Break Button */}
@@ -158,7 +195,7 @@ export default function SafetyCheckModal({
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-300 font-semibold text-xs transition-all"
             >
               <Coffee className="w-4 h-4" />
-              <span>I'M TAKING A BREAK</span>
+              <span>TAKING A BREAK</span>
             </button>
 
             {/* Extend Journey Button */}

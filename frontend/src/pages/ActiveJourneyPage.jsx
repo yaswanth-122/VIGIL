@@ -351,6 +351,30 @@ export default function ActiveJourneyPage({ onOpenSOS }) {
                 <div className="font-bold text-cyan-400">{telemetry.speed} km/h</div>
               </div>
             </div>
+
+            {/* Prolonged Activity Safety Check Duration Quick Switcher */}
+            <div className="pt-2 border-t border-white/10 space-y-1.5">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-gray-300 font-bold">Safety Check Popup Interval:</span>
+                <span className="text-cyan-400 font-extrabold font-mono">{journey.safety_timeout_mins || 10} Mins</span>
+              </div>
+              <div className="grid grid-cols-4 gap-1.5 text-[10px]">
+                {[2, 5, 10, 15].map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => handleUpdateTimeoutMins(m)}
+                    className={`py-1 rounded-lg font-bold border transition-colors ${
+                      (journey.safety_timeout_mins || 10) === m
+                        ? 'bg-cyan-500/30 text-cyan-300 border-cyan-400'
+                        : 'bg-white/5 text-gray-400 border-white/10 hover:text-white'
+                    }`}
+                  >
+                    {m}m
+                  </button>
+                ))}
+              </div>
+            </div>
+
           </div>
 
         </div>
@@ -362,10 +386,12 @@ export default function ActiveJourneyPage({ onOpenSOS }) {
         isOpen={showSafetyModal}
         onClose={() => setShowSafetyModal(false)}
         triggerReason={riskEval.reasons?.map(r => r.text).join(', ')}
+        timeoutMinutes={journey.safety_timeout_mins || 10}
         onRespondSafe={handleRespondSafe}
         onRespondBreak={handleRespondBreak}
         onRespondExtend={(mins) => alert(`Journey extended by ${mins} minutes.`)}
         onTriggerSOS={onOpenSOS}
+        onUpdateTimeoutMins={handleUpdateTimeoutMins}
       />
 
     </div>

@@ -33,6 +33,7 @@ export default function StartJourneyPage({ onActivateSafetyMode }) {
   });
 
   const [durationMins, setDurationMins] = useState(45);
+  const [safetyTimeoutMins, setSafetyTimeoutMins] = useState(10);
   const [isAutoDuration, setIsAutoDuration] = useState(true);
   const [calculatedDistKm, setCalculatedDistKm] = useState('8.4');
   const [guardians, setGuardians] = useState([]);
@@ -176,6 +177,7 @@ export default function StartJourneyPage({ onActivateSafetyMode }) {
         start_location: { name: startName, lat: parseFloat(startLat), lng: parseFloat(startLng) },
         destination: { name: destName, lat: parseFloat(destLat), lng: parseFloat(destLng) },
         duration_mins: parseInt(durationMins),
+        safety_timeout_mins: parseInt(safetyTimeoutMins),
         trusted_contact_id: selectedContact,
         mode: 'safety'
       };
@@ -556,7 +558,7 @@ export default function StartJourneyPage({ onActivateSafetyMode }) {
           </div>
 
           {/* Trusted Guardian Selector */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             <label className="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
               <UserCheck className="w-4 h-4 text-purple-400" />
               <span>Primary Guardian Contact</span>
@@ -578,6 +580,45 @@ export default function StartJourneyPage({ onActivateSafetyMode }) {
             </select>
           </div>
 
+        </div>
+
+        {/* Prolonged Activity Safety Check Popup Duration Selector */}
+        <div className="space-y-3 p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-amber-400" />
+              <span>Safety Check Popup & Prolonged Activity Duration</span>
+            </label>
+            <span className="text-xs text-amber-400 font-extrabold font-mono">
+              {safetyTimeoutMins} Mins Timeout
+            </span>
+          </div>
+          <p className="text-[11px] text-gray-300">
+            Select duration after prolonged activity or stationary stop when "ARE YOU SAFE?" popup appears:
+          </p>
+          <div className="grid grid-cols-5 gap-2">
+            {[
+              { label: '2 Mins', val: 2, tag: 'Demo' },
+              { label: '5 Mins', val: 5, tag: 'Fast' },
+              { label: '10 Mins', val: 10, tag: 'Default' },
+              { label: '15 Mins', val: 15, tag: 'Standard' },
+              { label: '30 Mins', val: 30, tag: 'Relaxed' }
+            ].map((opt) => (
+              <button
+                key={opt.val}
+                type="button"
+                onClick={() => setSafetyTimeoutMins(opt.val)}
+                className={`py-2 px-1 rounded-xl border text-xs font-bold flex flex-col items-center gap-0.5 transition-all ${
+                  safetyTimeoutMins === opt.val
+                    ? 'bg-amber-500/30 text-amber-300 border-amber-500/80 shadow-md shadow-amber-500/20 font-black'
+                    : 'bg-black/30 text-gray-400 border-white/10 hover:text-white'
+                }`}
+              >
+                <span>{opt.label}</span>
+                <span className="text-[9px] font-mono opacity-70">{opt.tag}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Submit Action */}

@@ -140,6 +140,14 @@ export const api = {
     });
   },
 
+  async updateSafetyTimeout(journeyId, safetyTimeoutMins = 10) {
+    return safeFetch(`${API_BASE}/journeys/${journeyId}/safety-timeout`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ safety_timeout_mins: safetyTimeoutMins })
+    });
+  },
+
   // SOS
   async triggerSOS(journeyId, isSilent = false, locationData = null) {
     const targetId = journeyId || 'active';
