@@ -58,31 +58,10 @@ function MainAppContent() {
     setCurrentMode(mode);
   };
 
-  const handleOpenSOS = async () => {
+  const handleOpenSOS = () => {
     setIsSOSOpen(true);
-
-    // Direct dial phone call to specific enabled guardian without permission delay
-    try {
-      const res = await api.getGuardians();
-      let targetPhone = '+917659834470'; // Hari Kiran primary real-time phone number
-
-      if (res.success && Array.isArray(res.guardians) && res.guardians.length > 0) {
-        const primary = res.guardians.find(g => g.is_primary && g.enabled) ||
-                        res.guardians.find(g => g.enabled) ||
-                        res.guardians[0];
-        if (primary && primary.phone) {
-          targetPhone = primary.phone;
-        }
-      }
-
-      const cleanPhone = targetPhone.replace(/[^0-9+]/g, '');
-      if (cleanPhone) {
-        window.location.href = `tel:${cleanPhone}`;
-      }
-    } catch (err) {
-      console.error('Error initiating direct phone call:', err);
-      window.location.href = 'tel:+917659834470';
-    }
+    // Instant zero-delay direct call to default guardian Hari Kiran (+917659834470)
+    window.location.href = 'tel:+917659834470';
   };
 
   const handleConfirmSOS = async (isSilent) => {
