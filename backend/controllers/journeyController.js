@@ -80,7 +80,9 @@ exports.getActiveJourney = (req, res) => {
 exports.createJourney = (req, res) => {
   const db = readDb();
   const user = extractUser(req, db);
-  const { name, start_location, destination, duration_mins, safety_timeout_mins, trusted_contact_id, mode } = req.body;
+  const { name, start_location, destination, duration_mins, safety_timeout_mins, no_movement_threshold_mins, trusted_contact_id, mode } = req.body;
+
+  const thresholdMins = parseInt(no_movement_threshold_mins || safety_timeout_mins) || 2;
 
   // Mark existing active journey as completed/cancelled
   db.journeys.forEach(j => {
@@ -89,6 +91,8 @@ exports.createJourney = (req, res) => {
       j.end_time = new Date().toISOString();
     }
   });
+
+  const nowIso = new Date().toISOString();
 
   const newJourney = {
     id: `jrn_${Date.now()}`,
@@ -99,17 +103,27 @@ exports.createJourney = (req, res) => {
     destination: destination || { name: 'Destination', lat: 12.9352, lng: 77.6245 },
     status: 'active',
     mode: mode || 'safety',
-    start_time: new Date().toISOString(),
+    start_time: nowIso,
     end_time: null,
     duration_mins: parseInt(duration_mins) || 60,
-    safety_timeout_mins: parseInt(safety_timeout_mins) || 10,
+    safety_timeout_mins: thresholdMins,
+    no_movement_threshold_mins: thresholdMins,
+    monitoring_status: 'SAFE',
     trusted_contact_id: trusted_contact_id || 'tc_1',
     risk_score: 0,
     risk_level: 'GREEN',
     is_offline: false,
     break_until: null,
     simulated_anomalies: [],
-    created_at: new Date().toISOString()
+    safety_log: [
+      {
+        id: `log_${Date.now()}_start`,
+        event: 'Journey Started',
+        details: `Journey initiated with ${thresholdMins} min no-movement threshold.`,
+        timestamp: nowIso
+      }
+    ],
+    created_at: nowIso
   };
 
   db.journeys.unshift(newJourney);
@@ -124,7 +138,7 @@ exports.createJourney = (req, res) => {
     heading: 0,
     battery: 95,
     network: 'online',
-    timestamp: new Date().toISOString()
+    timestamp: nowIso
   };
   db.location_updates.push(initialLoc);
 
@@ -255,46 +269,159 @@ exports.getJourneyLocations = (req, res) => {
 // POST /api/journeys/:id/safety-check
 exports.handleSafetyCheck = (req, res) => {
   const db = readDb();
-  const { action, duration_mins } = req.body;
+  const user = extractUser(req, db);
+  const { action, duration_mins, details } = req.body;
   const journey = db.journeys.find(j => j.id === req.params.id);
 
   if (!journey) {
     return res.status(404).json({ success: false, message: 'Journey not found' });
   }
 
+  if (!journey.safety_log) {
+    journey.safety_log = [];
+  }
+
+  const nowIso = new Date().toISOString();
+
   if (action === 'TRIGGER') {
     const newCheck = {
       id: `chk_${Date.now()}`,
       journey_id: journey.id,
-      trigger_reason: 'Manual Safety Check Dispatched',
+      trigger_reason: details || 'Inactivity Detected / Safety Check Triggered',
       status: 'PENDING',
-      timestamp: new Date().toISOString(),
+      timestamp: nowIso,
       timeout_seconds: 30
     };
     db.safety_checks.push(newCheck);
+    journey.monitoring_status = 'AWAITING SAFETY RESPONSE';
+
+    journey.safety_log.unshift({
+      id: `log_${Date.now()}`,
+      event: 'Safety Check Triggered',
+      details: details || `Inactivity threshold reached (${journey.no_movement_threshold_mins || 2} min). Awaiting response.`,
+      timestamp: nowIso
+    });
+
     writeDb(db);
-    return res.json({ success: true, safety_check: newCheck });
+    return res.json({ success: true, safety_check: newCheck, journey });
   }
 
   const activeCheck = db.safety_checks.find(s => s.journey_id === journey.id && s.status === 'PENDING');
   if (activeCheck) {
     activeCheck.status = action;
-    activeCheck.response_time = new Date().toISOString();
+    activeCheck.response_time = nowIso;
   }
 
   if (action === 'SAFE') {
     journey.simulated_anomalies = [];
     journey.risk_score = 10;
     journey.risk_level = 'GREEN';
+    journey.monitoring_status = 'SAFE';
+
+    journey.safety_log.unshift({
+      id: `log_${Date.now()}`,
+      event: 'User Marked SAFE',
+      details: 'User confirmed safe status. Inactivity timer reset. Journey monitoring continues.',
+      timestamp: nowIso
+    });
+
+  } else if (action === 'UNSAFE') {
+    journey.risk_score = 85;
+    journey.risk_level = 'RED';
+    journey.monitoring_status = 'UNSAFE';
+
+    const locs = db.location_updates.filter(l => l.journey_id === journey.id);
+    const lastLoc = locs.length > 0 ? locs[locs.length - 1] : { latitude: 12.9716, longitude: 77.5946 };
+
+    db.alerts.unshift({
+      id: `alt_${Date.now()}`,
+      journey_id: journey.id,
+      user_name: user.name,
+      alert_type: 'UNSAFE_STATUS',
+      message: `🟠 UNSAFE STATUS DISPATCHED: ${user.name} responded UNSAFE to safety check. Guardian Hari Kiran (+917659834470) notified.`,
+      risk_score: 85,
+      status: 'active',
+      timestamp: nowIso,
+      location: { lat: lastLoc.latitude, lng: lastLoc.longitude }
+    });
+
+    journey.safety_log.unshift({
+      id: `log_${Date.now()}`,
+      event: 'User Marked UNSAFE',
+      details: 'User responded UNSAFE. Primary guardian Hari Kiran (+917659834470) notified with latest location.',
+      timestamp: nowIso
+    });
+
+    journey.safety_log.unshift({
+      id: `log_${Date.now()}_guard`,
+      event: 'Guardian Notified',
+      details: 'Alert & location payload sent to Hari Kiran (+917659834470).',
+      timestamp: nowIso
+    });
+
+  } else if (action === 'NO_RESPONSE') {
+    journey.risk_score = 100;
+    journey.risk_level = 'RED';
+    journey.monitoring_status = 'EMERGENCY';
+
+    const locs = db.location_updates.filter(l => l.journey_id === journey.id);
+    const lastLoc = locs.length > 0 ? locs[locs.length - 1] : { latitude: 12.9716, longitude: 77.5946 };
+
+    // Prevent duplicate alert spam
+    const existingAlert = db.alerts.find(a => a.journey_id === journey.id && a.alert_type === 'NO_RESPONSE');
+    if (!existingAlert) {
+      db.alerts.unshift({
+        id: `alt_${Date.now()}`,
+        journey_id: journey.id,
+        user_name: user.name,
+        alert_type: 'NO_RESPONSE',
+        message: `🚨 NO RESPONSE / POTENTIAL EMERGENCY: ${user.name} failed to respond to 30s safety check prompt. Guardian Hari Kiran (+917659834470) notified.`,
+        risk_score: 100,
+        status: 'active',
+        timestamp: nowIso,
+        location: { lat: lastLoc.latitude, lng: lastLoc.longitude }
+      });
+    }
+
+    journey.safety_log.unshift({
+      id: `log_${Date.now()}`,
+      event: 'No Response / Potential Emergency',
+      details: 'Countdown reached 0 with no response. Potential emergency protocol initiated.',
+      timestamp: nowIso
+    });
+
+    journey.safety_log.unshift({
+      id: `log_${Date.now()}_guard`,
+      event: 'Guardian Notified',
+      details: 'Emergency alert & live location sent to Hari Kiran (+917659834470).',
+      timestamp: nowIso
+    });
+
   } else if (action === 'BREAK') {
     const breakMins = parseInt(duration_mins) || 15;
     journey.break_until = new Date(Date.now() + breakMins * 60000).toISOString();
     journey.risk_score = 5;
     journey.risk_level = 'GREEN';
+    journey.monitoring_status = 'BREAK';
+
+    journey.safety_log.unshift({
+      id: `log_${Date.now()}`,
+      event: 'Break Started',
+      details: `User requested ${breakMins} min break. Safety checks paused.`,
+      timestamp: nowIso
+    });
+
   } else if (action === 'EXTEND') {
     journey.duration_mins += parseInt(duration_mins) || 30;
     journey.risk_score = 15;
     journey.risk_level = 'GREEN';
+
+    journey.safety_log.unshift({
+      id: `log_${Date.now()}`,
+      event: 'Journey Extended',
+      details: `Journey extended by ${duration_mins || 30} minutes.`,
+      timestamp: nowIso
+    });
   }
 
   writeDb(db);

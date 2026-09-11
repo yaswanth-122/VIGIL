@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertOctagon, ShieldCheck, Coffee, Clock, AlertTriangle, X, Bot, Sparkles, Volume2 } from 'lucide-react';
+import { AlertOctagon, ShieldCheck, Coffee, Clock, AlertTriangle, X, Sparkles, Volume2, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { startAlarm, stopAlarm, speakVoiceAnnouncement } from '../utils/audio';
 import { api } from '../services/api';
 
@@ -7,31 +7,36 @@ export default function SafetyCheckModal({
   isOpen,
   onClose,
   onRespondSafe,
+  onRespondUnsafe,
   onRespondBreak,
   onRespondExtend,
   onTriggerSOS,
+  onNoResponse,
   onUpdateTimeoutMins,
   triggerReason,
-  timeoutMinutes = 10
+  timeoutMinutes = 2
 }) {
   const [showBreakOptions, setShowBreakOptions] = useState(false);
   const [showDurationOptions, setShowDurationOptions] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(timeoutMinutes * 60);
+  const [secondsLeft, setSecondsLeft] = useState(30);
   const [noResponseTriggered, setNoResponseTriggered] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [aiMessage, setAiMessage] = useState('Checking in with VIGIL AI Virtual Companion...');
 
   useEffect(() => {
     if (!isOpen) {
-      setSecondsLeft(timeoutMinutes * 60);
+      setSecondsLeft(30);
       setNoResponseTriggered(false);
+      setShowToast(false);
       return;
     }
 
-    setSecondsLeft(timeoutMinutes * 60);
+    setSecondsLeft(30);
     setNoResponseTriggered(false);
+    setShowToast(false);
 
     // Fetch Gemini AI Conversational Check-in Prompt
-    api.getAICheckIn(triggerReason || 'PROLONGED_ACTIVITY').then((res) => {
+    api.getAICheckIn(triggerReason || 'PROLONGED_INACTIVITY').then((res) => {
       if (res.success && res.ai_message) {
         setAiMessage(res.ai_message);
         speakVoiceAnnouncement(res.ai_message);
@@ -57,30 +62,51 @@ export default function SafetyCheckModal({
     startAlarm();
     window.location.href = 'tel:+917659834470';
     speakVoiceAnnouncement(
-      "No safety check response detected after prolonged activity. Dialing primary guardian Hari Kiran automatically."
+      `No response detected for ${timeoutMinutes} minutes inactivity. Dialing primary guardian Hari Kiran automatically.`
     );
+    if (onNoResponse) {
+      onNoResponse();
+    }
   };
 
   const handleSafeAction = () => {
     stopAlarm();
-    onRespondSafe();
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+      onRespondSafe();
+    }, 1200);
   };
 
-  const handleBreakAction = (mins) => {
+  const handleUnsafeAction = () => {
     stopAlarm();
-    onRespondBreak(mins);
+    if (onRespondUnsafe) {
+      onRespondUnsafe();
+    }
+  };
+
+  const handleSOSAction = () => {
+    stopAlarm();
+    window.location.href = 'tel:+917659834470';
+    if (onTriggerSOS) {
+      onTriggerSOS();
+    }
   };
 
   if (!isOpen) return null;
 
-  const minutesPart = Math.floor(secondsLeft / 60);
-  const secondsPart = secondsLeft % 60;
-  const formattedTime = `${String(minutesPart).padStart(2, '0')}:${String(secondsPart).padStart(2, '0')}`;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-lg animate-fadeIn">
-      <div className="relative w-full max-w-md bg-[#121826] border-2 border-amber-500/50 rounded-3xl p-6 shadow-2xl shadow-amber-500/30 text-white flex flex-col gap-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-lg animate-fadeIn font-sans">
+      <div className="relative w-full max-w-lg bg-[#121826] border-2 border-amber-500/60 rounded-3xl p-6 shadow-2xl shadow-amber-500/40 text-white flex flex-col gap-5">
         
+        {/* Safe Confirmation Toast */}
+        {showToast && (
+          <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-emerald-600 text-white font-extrabold text-xs px-4 py-2 rounded-xl shadow-xl border border-emerald-300 flex items-center gap-2 animate-bounce z-50">
+            <CheckCircle2 className="w-4 h-4 text-white" />
+            <span>You're marked SAFE. Journey monitoring continues.</span>
+          </div>
+        )}
+
         {/* Close Button */}
         <button
           onClick={() => {
@@ -98,20 +124,21 @@ export default function SafetyCheckModal({
             <AlertTriangle className="w-8 h-8" />
           </div>
           <div>
-            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
-              ⚠️ PROLONGED ACTIVITY DETECTED
+            <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+              ⚠️ VIGIL SAFETY CHECK
             </span>
-            <h2 className="text-2xl font-extrabold text-white font-outfit tracking-wide mt-0.5">ARE YOU SAFE?</h2>
-            <p className="text-xs text-amber-300 font-medium">{triggerReason || 'Unexpected stop or prolonged inactivity detected'}</p>
+            <h2 className="text-xl sm:text-2xl font-black text-white font-outfit tracking-wide mt-1">
+              We haven't detected movement for {timeoutMinutes} minute{timeoutMinutes !== 1 ? 's' : ''}. Are you safe?
+            </h2>
           </div>
         </div>
 
         {/* Gemini AI Voice Check-In Agent Card */}
-        <div className="bg-gradient-to-r from-blue-950/60 via-purple-950/40 to-slate-900 border border-cyan-500/30 p-4 rounded-xl space-y-2 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-950/60 via-purple-950/40 to-slate-900 border border-cyan-500/30 p-3.5 rounded-xl space-y-2 relative overflow-hidden">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-400">
               <Sparkles className="w-4 h-4 text-cyan-400 animate-spin" style={{ animationDuration: '6s' }} />
-              <span>VIGIL Gemini AI Voice Agent Check-in</span>
+              <span>VIGIL AI Virtual Companion</span>
             </div>
             <button
               type="button"
@@ -128,38 +155,40 @@ export default function SafetyCheckModal({
           </p>
         </div>
 
-        {/* Countdown Timer & Duration Indicator Display */}
-        <div className={`p-3.5 rounded-2xl border flex items-center justify-between gap-3 text-xs ${
-          noResponseTriggered ? 'bg-red-500/20 border-red-500/50 text-red-300 glow-red animate-pulse' : 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+        {/* Visible 30-Second Countdown Timer */}
+        <div className={`p-4 rounded-2xl border flex items-center justify-between gap-3 text-xs ${
+          noResponseTriggered
+            ? 'bg-red-500/20 border-red-500/50 text-red-300 glow-red animate-pulse'
+            : 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 border-amber-500/40 text-amber-300'
         }`}>
           <div>
-            <div className="text-[10px] uppercase font-bold text-gray-400">Response Countdown</div>
-            <div className="text-2xl font-extrabold font-mono text-white">
-              {noResponseTriggered ? '00:00' : formattedTime}
+            <div className="text-[10px] uppercase font-bold text-gray-300 tracking-wider">RESPONSE COUNTDOWN</div>
+            <div className="text-3xl font-black font-mono text-white mt-0.5">
+              {noResponseTriggered ? '00' : `${String(secondsLeft).padStart(2, '0')}s`}
             </div>
           </div>
           <div className="text-right">
-            <span className="text-[11px] font-bold block">
-              {noResponseTriggered ? '🚨 NO RESPONSE DETECTED' : `Safety Popup Interval: ${timeoutMinutes} Mins`}
+            <span className="text-xs font-bold block text-white">
+              {noResponseTriggered ? '🚨 NO RESPONSE DETECTED' : `Please respond within ${secondsLeft} seconds.`}
             </span>
             <button
               onClick={() => setShowDurationOptions(!showDurationOptions)}
-              className="text-[10px] font-bold text-cyan-400 hover:underline mt-0.5"
+              className="text-[10px] font-bold text-cyan-400 hover:underline mt-1"
             >
-              Change Duration →
+              No-Movement Threshold: {timeoutMinutes} min →
             </button>
           </div>
         </div>
 
         {/* Duration Selection Input Mode */}
         {showDurationOptions && (
-          <div className="bg-slate-950/80 p-3.5 rounded-2xl border border-cyan-500/40 space-y-2 animate-fadeIn">
+          <div className="bg-slate-950/90 p-3.5 rounded-2xl border border-cyan-500/40 space-y-2 animate-fadeIn">
             <div className="flex items-center justify-between text-xs font-bold text-cyan-300">
-              <span>Select Prolonged Activity Safety Check Duration:</span>
+              <span>Select No-Movement Threshold:</span>
               <button onClick={() => setShowDurationOptions(false)} className="text-gray-400 hover:text-white">✕</button>
             </div>
-            <div className="grid grid-cols-5 gap-1.5">
-              {[2, 5, 10, 15, 30].map((m) => (
+            <div className="grid grid-cols-6 gap-1">
+              {[1, 2, 3, 4, 5, 6].map((m) => (
                 <button
                   key={m}
                   onClick={() => {
@@ -167,7 +196,7 @@ export default function SafetyCheckModal({
                     setShowDurationOptions(false);
                   }}
                   className={`py-2 rounded-xl text-xs font-bold border transition-all ${
-                    timeoutMinutes === m ? 'bg-cyan-500/30 text-cyan-300 border-cyan-400' : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10'
+                    timeoutMinutes === m ? 'bg-cyan-500/30 text-cyan-300 border-cyan-400 font-black' : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10'
                   }`}
                 >
                   {m}m
@@ -177,47 +206,34 @@ export default function SafetyCheckModal({
           </div>
         )}
 
-        {/* Primary Action Buttons */}
+        {/* 3 Large Action Buttons: SAFE, UNSAFE, SOS */}
         {!showBreakOptions ? (
-          <div className="space-y-2.5">
-            {/* I'm Safe Button */}
+          <div className="space-y-3">
+            {/* 🟢 SAFE */}
             <button
               onClick={handleSafeAction}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 border border-emerald-400/30 transition-all active:scale-98"
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-base shadow-xl shadow-emerald-600/40 border border-emerald-400/40 transition-all active:scale-98 flex items-center justify-center gap-2"
             >
-              <ShieldCheck className="w-5 h-5" />
-              <span>YES, I'M SAFE (RESET ALERT)</span>
+              <ShieldCheck className="w-6 h-6" />
+              <span>🟢 I'M SAFE</span>
             </button>
 
-            {/* Taking a Break Button */}
+            {/* 🟠 UNSAFE */}
             <button
-              onClick={() => setShowBreakOptions(true)}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-300 font-semibold text-xs transition-all"
+              onClick={handleUnsafeAction}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-extrabold text-sm shadow-lg shadow-orange-600/30 border border-orange-400/40 transition-all active:scale-98 flex items-center justify-center gap-2"
             >
-              <Coffee className="w-4 h-4" />
-              <span>TAKING A BREAK</span>
+              <ShieldAlert className="w-5 h-5" />
+              <span>🟠 I'M UNSAFE</span>
             </button>
 
-            {/* Extend Journey Button */}
+            {/* 🔴 SOS EMERGENCY */}
             <button
-              onClick={() => onRespondExtend(30)}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-semibold text-xs transition-all"
+              onClick={handleSOSAction}
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-black text-base shadow-xl shadow-red-600/50 border border-red-400/40 transition-all flex items-center justify-center gap-2 animate-pulse-glow"
             >
-              <Clock className="w-4 h-4" />
-              <span>EXTEND JOURNEY (+30 MINS)</span>
-            </button>
-
-            {/* SOS Direct Trigger */}
-            <button
-              onClick={() => {
-                stopAlarm();
-                window.location.href = 'tel:+917659834470';
-                onTriggerSOS();
-              }}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-extrabold text-sm shadow-lg shadow-red-600/40 border border-red-400/30 transition-all flex items-center justify-center gap-2 animate-pulse-glow"
-            >
-              <AlertOctagon className="w-5 h-5" />
-              <span>🚨 TRIGGER EMERGENCY SOS & AUTO-CALL</span>
+              <AlertOctagon className="w-6 h-6" />
+              <span>🔴 SOS EMERGENCY</span>
             </button>
           </div>
         ) : (
@@ -229,7 +245,8 @@ export default function SafetyCheckModal({
                 <button
                   key={mins}
                   onClick={() => {
-                    handleBreakAction(mins);
+                    stopAlarm();
+                    onRespondBreak(mins);
                     setShowBreakOptions(false);
                   }}
                   className="py-2.5 rounded-xl bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 text-blue-300 font-bold text-xs transition-all flex flex-col items-center gap-1"

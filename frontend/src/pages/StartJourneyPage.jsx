@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Navigation, Clock, UserCheck, ShieldAlert, ArrowRight, Compass, LocateFixed, Search, AlertCircle, Sparkles, Sun, ExternalLink, Building2, Map, ShieldCheck, RefreshCw, X } from 'lucide-react';
 import { api } from '../services/api';
+import GoogleMapView from '../components/GoogleMapView';
 
 export default function StartJourneyPage({ onActivateSafetyMode }) {
   const navigate = useNavigate();
@@ -400,7 +401,7 @@ export default function StartJourneyPage({ onActivateSafetyMode }) {
             )}
           </div>
 
-          {/* Selected Google Place Details Card */}
+          {/* Selected Google Place Details Card & Interactive Google Map */}
           {selectedPlaceDetails && (
             <div className="p-4 rounded-2xl bg-slate-950/60 border border-cyan-500/30 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2">
@@ -428,7 +429,7 @@ export default function StartJourneyPage({ onActivateSafetyMode }) {
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-400 text-[10px]">COORDINATES:</span>
-                    <span className="text-cyan-400 font-mono text-[11px]">{destLat?.toFixed(4)}, {destLng?.toFixed(4)}</span>
+                    <span className="text-cyan-400 font-mono text-[11px]">{parseFloat(destLat)?.toFixed(4)}, {parseFloat(destLng)?.toFixed(4)}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-400 text-[10px]">LIGHTING INDEX:</span>
@@ -439,6 +440,19 @@ export default function StartJourneyPage({ onActivateSafetyMode }) {
                     <span className="text-amber-400 font-extrabold text-[11px]">{selectedPlaceDetails.safetyScore || 92}%</span>
                   </div>
                 </div>
+              </div>
+
+              {/* Interactive Google Map Destination Route Preview */}
+              <div className="h-64 rounded-2xl overflow-hidden border border-white/10 pt-2">
+                <GoogleMapView
+                  startLocation={{ name: startName, lat: parseFloat(startLat), lng: parseFloat(startLng) }}
+                  destination={{ name: destName, lat: parseFloat(destLat), lng: parseFloat(destLng) }}
+                  currentLocation={{ lat: parseFloat(startLat), lng: parseFloat(startLng) }}
+                  riskLevel="GREEN"
+                  eta={`${durationMins} Mins`}
+                  distance={`${calculatedDistKm} km`}
+                  speed="0 km/h"
+                />
               </div>
             </div>
           )}
@@ -582,27 +596,28 @@ export default function StartJourneyPage({ onActivateSafetyMode }) {
 
         </div>
 
-        {/* Prolonged Activity Safety Check Popup Duration Selector */}
+        {/* Custom No-Movement Detection Timer Selector */}
         <div className="space-y-3 p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-2">
+            <label className="text-xs font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-amber-400" />
-              <span>Safety Check Popup & Prolonged Activity Duration</span>
+              <span>If no movement is detected for:</span>
             </label>
-            <span className="text-xs text-amber-400 font-extrabold font-mono">
-              {safetyTimeoutMins} Mins Timeout
+            <span className="text-xs text-amber-400 font-black font-mono">
+              {safetyTimeoutMins} Min{safetyTimeoutMins !== 1 ? 's' : ''} Threshold
             </span>
           </div>
           <p className="text-[11px] text-gray-300">
-            Select duration after prolonged activity or stationary stop when "ARE YOU SAFE?" popup appears:
+            Select how long VIGIL should wait when continuous no-movement is detected before automatically launching the Safety Check Popup:
           </p>
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-6 gap-2">
             {[
-              { label: '2 Mins', val: 2, tag: 'Demo' },
-              { label: '5 Mins', val: 5, tag: 'Fast' },
-              { label: '10 Mins', val: 10, tag: 'Default' },
-              { label: '15 Mins', val: 15, tag: 'Standard' },
-              { label: '30 Mins', val: 30, tag: 'Relaxed' }
+              { label: '1 min', val: 1, tag: 'Demo' },
+              { label: '2 min', val: 2, tag: 'Recommended' },
+              { label: '3 min', val: 3, tag: 'Standard' },
+              { label: '4 min', val: 4, tag: 'Relaxed' },
+              { label: '5 min', val: 5, tag: 'High Buffer' },
+              { label: '6 min', val: 6, tag: 'Max' }
             ].map((opt) => (
               <button
                 key={opt.val}
@@ -610,12 +625,12 @@ export default function StartJourneyPage({ onActivateSafetyMode }) {
                 onClick={() => setSafetyTimeoutMins(opt.val)}
                 className={`py-2 px-1 rounded-xl border text-xs font-bold flex flex-col items-center gap-0.5 transition-all ${
                   safetyTimeoutMins === opt.val
-                    ? 'bg-amber-500/30 text-amber-300 border-amber-500/80 shadow-md shadow-amber-500/20 font-black'
+                    ? 'bg-amber-500/30 text-amber-300 border-amber-500/80 shadow-md shadow-amber-500/20 font-black scale-105'
                     : 'bg-black/30 text-gray-400 border-white/10 hover:text-white'
                 }`}
               >
                 <span>{opt.label}</span>
-                <span className="text-[9px] font-mono opacity-70">{opt.tag}</span>
+                <span className="text-[8px] font-mono opacity-75">{opt.tag}</span>
               </button>
             ))}
           </div>

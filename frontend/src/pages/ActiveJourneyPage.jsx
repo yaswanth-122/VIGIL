@@ -5,6 +5,7 @@ import { api } from '../services/api';
 import GoogleMapView from '../components/GoogleMapView';
 import RiskMeter from '../components/RiskMeter';
 import SafetyCheckModal from '../components/SafetyCheckModal';
+import SafetyEventLog from '../components/SafetyEventLog';
 import DemoControlCenterBar from '../components/DemoControlCenterBar';
 import { useImpactSensor } from '../hooks/useImpactSensor';
 
@@ -166,6 +167,27 @@ export default function ActiveJourneyPage({ onOpenSOS }) {
       fetchActiveJourneySilently();
     } catch (err) {
       console.error('Error responding safe:', err);
+    }
+  };
+
+  const handleRespondUnsafe = async () => {
+    if (!journey) return;
+    try {
+      await api.handleSafetyCheck(journey.id, 'UNSAFE');
+      setShowSafetyModal(false);
+      fetchActiveJourneySilently();
+    } catch (err) {
+      console.error('Error responding unsafe:', err);
+    }
+  };
+
+  const handleNoResponse = async () => {
+    if (!journey) return;
+    try {
+      await api.handleSafetyCheck(journey.id, 'NO_RESPONSE');
+      fetchActiveJourneySilently();
+    } catch (err) {
+      console.error('Error handling no response timeout:', err);
     }
   };
 
