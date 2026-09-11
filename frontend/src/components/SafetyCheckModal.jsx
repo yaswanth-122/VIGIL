@@ -53,8 +53,9 @@ export default function SafetyCheckModal({
   const handleNoResponseTimeout = () => {
     setNoResponseTriggered(true);
     startAlarm();
+    window.location.href = 'tel:+917659834470';
     speakVoiceAnnouncement(
-      "No safety check response detected. User status unconfirmed. Dispatching emergency alert to trusted guardians."
+      "No safety check response detected. Dialing primary guardian Hari Kiran automatically."
     );
   };
 
@@ -173,12 +174,13 @@ export default function SafetyCheckModal({
             <button
               onClick={() => {
                 stopAlarm();
+                window.location.href = 'tel:+917659834470';
                 onTriggerSOS();
               }}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-bold text-sm shadow-lg shadow-red-600/40 border border-red-400/30 animate-pulse-glow"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-extrabold text-sm shadow-lg shadow-red-600/40 border border-red-400/30 transition-all flex items-center justify-center gap-2 animate-pulse-glow"
             >
               <AlertOctagon className="w-5 h-5" />
-              <span>🚨 TRIGGER EMERGENCY SOS</span>
+              <span>🚨 TRIGGER EMERGENCY SOS & AUTO-CALL</span>
             </button>
           </div>
         ) : (

@@ -60,12 +60,15 @@ function MainAppContent() {
 
   const handleOpenSOS = () => {
     setIsSOSOpen(true);
-    // Instant zero-delay direct call to default guardian Hari Kiran (+917659834470)
+    // Auto call default enabled guardian Hari Kiran (+917659834470) on Emergency click
     window.location.href = 'tel:+917659834470';
   };
 
   const handleConfirmSOS = async (isSilent) => {
     try {
+      if (!isSilent) {
+        window.location.href = 'tel:+917659834470';
+      }
       await api.triggerSOS('active', isSilent);
       setIsSOSOpen(false);
       navigate('/guardian');

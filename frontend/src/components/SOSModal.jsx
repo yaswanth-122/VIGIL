@@ -8,13 +8,16 @@ export default function SOSModal({ isOpen, onClose, activeJourney, userProfile, 
 
   useEffect(() => {
     if (isOpen) {
+      // Auto call primary enabled guardian Hari Kiran (+917659834470)
+      window.location.href = 'tel:+917659834470';
+
       // Trigger Siren Alarm Sound
       startAlarm();
       setIsAlarmActive(true);
 
       // Trigger AI Voice Speech Announcement
       speakVoiceAnnouncement(
-        "Emergency SOS has been activated. The user's current location and emergency details have been sent to their trusted guardians."
+        "Emergency SOS has been activated. Auto calling primary guardian Hari Kiran at 7 6 5 9 8 3 4 4 7 0 immediately."
       );
     } else {
       stopAlarm();
@@ -48,6 +51,7 @@ export default function SOSModal({ isOpen, onClose, activeJourney, userProfile, 
   };
 
   const handleStandardSOS = async () => {
+    window.location.href = 'tel:+917659834470';
     if (onConfirmSOS) {
       await onConfirmSOS(false);
     }
