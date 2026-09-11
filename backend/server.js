@@ -13,17 +13,28 @@ const PORT = process.env.PORT || 5000;
 // Initialize persistent DB engine
 initDb();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// Path Normalizer Middleware for Serverless & Direct Express compatibility
+// Comprehensive Universal CORS Middleware for local, network IP, Tailscale, and tunnel access
 app.use((req, res, next) => {
-  if (req.url.startsWith('/api/')) {
-    req.url = req.url.replace(/^\/api/, '');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, bypass-tunnel-reminder');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
+
+  // Path Normalizer & API flag for Express wildcard fallback
+  if (req.url.startsWith('/api/') || req.url === '/api') {
+    req.isApiCall = true;
+    req.url = req.url.replace(/^\/api/, '') || '/';
+  }
+
   next();
 });
+
+app.use(cors());
+app.use(express.json());
 
 // API Routes
 app.use('/', apiRoutes);
@@ -44,7 +55,7 @@ const fs = require('fs');
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
   app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api') || req.path === '/health') {
+    if (req.isApiCall || req.path.startsWith('/api') || req.path === '/health') {
       return next();
     }
     res.sendFile(path.join(distPath, 'index.html'));
